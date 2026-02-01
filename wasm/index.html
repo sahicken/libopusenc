@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WAV to Opus Encoder (WebAssembly)</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            margin: 0 0 10px 0;
+            color: #333;
+            font-size: 28px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .upload-zone {
+            border: 3px dashed #ddd;
+            border-radius: 8px;
+            padding: 60px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+        .upload-zone:hover {
+            border-color: #667eea;
+            background: #f0f0ff;
+        }
+        .upload-zone.dragover {
+            border-color: #667eea;
+            background: #e6e6ff;
+            transform: scale(1.02);
+        }
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        #fileInput { display: none; }
+        
+        .info-box {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+            display: none;
+        }
+        .info-box.show { display: block; }
+        .info-label { 
+            font-weight: 600; 
+            color: #555;
+            display: inline-block;
+            min-width: 100px;
+        }
+        
+        button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 20px;
+        }
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102,126,234,0.4);
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+            animation: slideIn 0.3s;
+        }
+        .status.show { display: block; }
+        .status.info { background: #e3f2fd; color: #1976d2; border-left: 4px solid #1976d2; }
+        .status.success { background: #e8f5e9; color: #388e3c; border-left: 4px solid #388e3c; }
+        .status.error { background: #ffebee; color: #d32f2f; border-left: 4px solid #d32f2f; }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 10px 0;
+            display: none;
+        }
+        .progress-bar.show { display: block; }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: white;
+            font-size: 13px;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎵 WAV to Opus Encoder</h1>
+        <div class="subtitle">Client-side audio encoding powered by WebAssembly</div>
+        
+        <div class="upload-zone" id="uploadZone">
+            <div class="upload-icon">📁</div>
+            <div><strong>Click to select</strong> or <strong>drag & drop</strong></div>
+            <div style="font-size: 13px; color: #999; margin-top: 8px;">WAV files only</div>
+            <input type="file" id="fileInput" accept=".wav,audio/wav,audio/x-wav">
+        </div>
+        
+        <div class="info-box" id="fileInfo"></div>
+        
+        <button id="encodeBtn" disabled>Encode to Opus</button>
+        
+        <div class="progress-bar" id="progressBar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        
+        <div class="status" id="status"></div>
+    </div>
+    
+    <footer>
+        Powered by libopusenc • 100% client-side processing • Your files never leave your device
+    </footer>
+
+    <script src="opus-encoder.js"></script>
+    <script>
+        let encoderModule = null;
+        let selectedFile = null;
+        let audioContext = null;
+
+        // DOM elements
+        const uploadZone = document.getElementById('uploadZone');
+        const fileInput = document.getElementById('fileInput');
+        const fileInfo = document.getElementById('fileInfo');
+        const encodeBtn = document.getElementById('encodeBtn');
+        const status = document.getElementById('status');
+        const progressBar = document.getElementById('progressBar');
+        const progressFill = document.getElementById('progressFill');
+
+        // Initialize WebAssembly module
+        showStatus('Loading encoder...', 'info');
+        createOpusEncoder().then(module => {
+            encoderModule = module;
+            showStatus('Ready! Select a WAV file to begin.', 'success');
+        }).catch(err => {
+            showStatus('Failed to load encoder: ' + err.message, 'error');
+        });
+
+        // Click to upload
+        uploadZone.addEventListener('click', () => fileInput.click());
+
+        // Drag & drop
+        uploadZone.addEventListener('dragover', e => {
+            e.preventDefault();
+            uploadZone.classList.add('dragover');
+        });
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.classList.remove('dragover');
+        });
+        uploadZone.addEventListener('drop', e => {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            if (e.dataTransfer.files.length) {
+                handleFile(e.dataTransfer.files[0]);
+            }
+        });
+
+        // File input change
+        fileInput.addEventListener('change', e => {
+            if (e.target.files.length) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        // Encode button
+        encodeBtn.addEventListener('click', encodeFile);
+
+        function handleFile(file) {
+            if (!file.name.toLowerCase().endsWith('.wav')) {
+                showStatus('Please select a WAV file.', 'error');
+                return;
+            }
+
+            selectedFile = file;
+            const sizeMB = (file.size / 1024 / 1024).toFixed(2);
+            
+            fileInfo.innerHTML = `
+                <div><span class="info-label">File:</span> ${file.name}</div>
+                <div><span class="info-label">Size:</span> ${sizeMB} MB</div>
+            `;
+            fileInfo.classList.add('show');
+            
+            encodeBtn.disabled = false;
+            showStatus('Ready to encode. Click the button to start!', 'info');
+        }
+
+        async function encodeFile() {
+            if (!encoderModule || !selectedFile) return;
+
+            encodeBtn.disabled = true;
+            progressBar.classList.add('show');
+            setProgress(10);
+
+            try {
+                // Initialize Web Audio API
+                if (!audioContext) {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                }
+
+                showStatus('Reading and decoding WAV file...', 'info');
+                setProgress(20);
+
+                // Read file and decode with Web Audio API (handles WAV parsing + resampling)
+                const arrayBuffer = await selectedFile.arrayBuffer();
+                setProgress(40);
+                
+                const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+                setProgress(50);
+
+                showStatus('Encoding to Opus...', 'info');
+
+                // Create encoder (Web Audio resamples to context sample rate, we'll resample to 48kHz)
+                const targetSampleRate = 48000;
+                const channels = audioBuffer.numberOfChannels;
+                
+                // Resample if needed
+                let pcmData;
+                if (audioBuffer.sampleRate !== targetSampleRate) {
+                    pcmData = await resampleAudio(audioBuffer, targetSampleRate);
+                } else {
+                    pcmData = audioBuffer.getChannelData(0);
+                    if (channels === 2) {
+                        // Interleave stereo
+                        const left = audioBuffer.getChannelData(0);
+                        const right = audioBuffer.getChannelData(1);
+                        pcmData = new Float32Array(left.length * 2);
+                        for (let i = 0; i < left.length; i++) {
+                            pcmData[i * 2] = left[i];
+                            pcmData[i * 2 + 1] = right[i];
+                        }
+                    }
+                }
+
+                setProgress(60);
+
+                // Create encoder context
+                const encoderPtr = encoderModule._encoder_create(targetSampleRate, channels);
+                if (!encoderPtr) {
+                    throw new Error('Failed to create encoder');
+                }
+
+                setProgress(70);
+
+                // Write PCM data to encoder
+                const pcmPtr = encoderModule._malloc(pcmData.length * 4);
+                encoderModule.HEAPF32.set(pcmData, pcmPtr >> 2);
+                
+                const samples = channels === 2 ? pcmData.length / 2 : pcmData.length;
+                const writeResult = encoderModule._encoder_write(encoderPtr, pcmPtr, samples);
+                encoderModule._free(pcmPtr);
+
+                if (writeResult !== 0) {
+                    encoderModule._encoder_destroy(encoderPtr);
+                    throw new Error('Encoding failed');
+                }
+
+                setProgress(80);
+
+                // Get pages during encoding
+                while (encoderModule._encoder_get_page(encoderPtr) > 0) {
+                    // Pages are automatically collected in encoder context
+                }
+
+                // Drain and get final pages
+                encoderModule._encoder_drain(encoderPtr);
+
+                setProgress(90);
+
+                // Get encoded data
+                const dataPtr = encoderModule._encoder_get_data(encoderPtr);
+                const dataSize = encoderModule._encoder_get_size(encoderPtr);
+                
+                // Copy data from WASM memory
+                const opusData = encoderModule.HEAP8.slice(dataPtr, dataPtr + dataSize);
+                const opusBlob = new Blob([opusData], { type: 'audio/opus' });
+
+                // Cleanup
+                encoderModule._encoder_destroy(encoderPtr);
+
+                setProgress(100);
+
+                // Download
+                const url = URL.createObjectURL(opusBlob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = selectedFile.name.replace(/\.wav$/i, '.opus');
+                a.click();
+                URL.revokeObjectURL(url);
+
+                // Show success
+                const originalMB = (selectedFile.size / 1024 / 1024).toFixed(2);
+                const compressedMB = (dataSize / 1024 / 1024).toFixed(2);
+                const ratio = ((1 - dataSize / selectedFile.size) * 100).toFixed(1);
+
+                showStatus(
+                    `✅ Encoding complete!<br>` +
+                    `${originalMB} MB → ${compressedMB} MB (${ratio}% smaller)<br>` +
+                    `Sample rate: ${audioBuffer.sampleRate} Hz → 48000 Hz, Channels: ${channels}`,
+                    'success'
+                );
+
+            } catch (error) {
+                showStatus('❌ Error: ' + error.message, 'error');
+                console.error(error);
+            } finally {
+                encodeBtn.disabled = false;
+                setTimeout(() => {
+                    progressBar.classList.remove('show');
+                    setProgress(0);
+                }, 2000);
+            }
+        }
+
+        async function resampleAudio(audioBuffer, targetRate) {
+            const channels = audioBuffer.numberOfChannels;
+            const sourceRate = audioBuffer.sampleRate;
+            const offlineCtx = new OfflineAudioContext(channels, 
+                audioBuffer.duration * targetRate, targetRate);
+            
+            const source = offlineCtx.createBufferSource();
+            source.buffer = audioBuffer;
+            source.connect(offlineCtx.destination);
+            source.start();
+            
+            const resampled = await offlineCtx.startRendering();
+            
+            // Interleave if stereo
+            if (channels === 2) {
+                const left = resampled.getChannelData(0);
+                const right = resampled.getChannelData(1);
+                const interleaved = new Float32Array(left.length * 2);
+                for (let i = 0; i < left.length; i++) {
+                    interleaved[i * 2] = left[i];
+                    interleaved[i * 2 + 1] = right[i];
+                }
+                return interleaved;
+            }
+            
+            return resampled.getChannelData(0);
+        }
+
+        function showStatus(message, type) {
+            status.innerHTML = message;
+            status.className = 'status show ' + type;
+        }
+
+        function setProgress(percent) {
+            progressFill.style.width = percent + '%';
+        }
+    </script>
+</body>
+</html>

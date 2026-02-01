@@ -1,0 +1,5 @@
+# Downloaded dependencies (users can rebuild if needed)
+opus-build/
+
+# OS files
+.DS_Store
