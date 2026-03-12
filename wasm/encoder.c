@@ -36,8 +36,8 @@ EncoderContext* encoder_create(int sample_rate, int channels) {
         return NULL;
     }
     
-    // Set sensible defaults: 128kbps, medium complexity
-    ope_encoder_ctl(ctx->enc, OPUS_SET_BITRATE(128000));
+    // Set sensible defaults: 32kbps, medium complexity
+    ope_encoder_ctl(ctx->enc, OPUS_SET_BITRATE(32000));
     ope_encoder_ctl(ctx->enc, OPUS_SET_COMPLEXITY(5));
     
     // Initialize output buffer (grows as needed)
