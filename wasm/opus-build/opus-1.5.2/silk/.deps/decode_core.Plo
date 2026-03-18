@@ -1,0 +1,88 @@
+silk/decode_core.lo: silk/decode_core.c config.h silk/main.h \
+  silk/SigProc_FIX.h \
+  /home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/compat/string.h \
+  /home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/string.h \
+  /home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/features.h \
+  /home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/bits/alltypes.h \
+  /home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/strings.h \
+  silk/typedef.h include/opus_types.h \
+  /home/runner/work/libopusenc/libopusenc/emsdk/upstream/lib/clang/23/include/stdint.h \
+  /home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/stdint.h \
+  /home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/bits/stdint.h \
+  include/opus_defines.h \
+  /home/runner/work/libopusenc/libopusenc/emsdk/upstream/lib/clang/23/include/float.h \
+  /home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/float.h \
+  /home/runner/work/libopusenc/libopusenc/emsdk/upstream/lib/clang/23/include/__float_header_macro.h \
+  /home/runner/work/libopusenc/libopusenc/emsdk/upstream/lib/clang/23/include/__float_float.h \
+  /home/runner/work/libopusenc/libopusenc/emsdk/upstream/lib/clang/23/include/__float_infinity_nan.h \
+  silk/resampler_structs.h silk/macros.h celt/arch.h celt/ecintrin.h \
+  /home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/compat/math.h \
+  /home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/math.h \
+  /home/runner/work/libopusenc/libopusenc/emsdk/upstream/lib/clang/23/include/limits.h \
+  /home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/limits.h \
+  /home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/bits/limits.h \
+  celt/cpu_support.h silk/Inlines.h silk/MacroCount.h silk/MacroDebug.h \
+  silk/define.h silk/errors.h silk/structs.h celt/entenc.h \
+  /home/runner/work/libopusenc/libopusenc/emsdk/upstream/lib/clang/23/include/stddef.h \
+  /home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/stddef.h \
+  /home/runner/work/libopusenc/libopusenc/emsdk/upstream/lib/clang/23/include/__stddef_header_macro.h \
+  /home/runner/work/libopusenc/libopusenc/emsdk/upstream/lib/clang/23/include/__stddef_ptrdiff_t.h \
+  /home/runner/work/libopusenc/libopusenc/emsdk/upstream/lib/clang/23/include/__stddef_size_t.h \
+  /home/runner/work/libopusenc/libopusenc/emsdk/upstream/lib/clang/23/include/__stddef_wchar_t.h \
+  /home/runner/work/libopusenc/libopusenc/emsdk/upstream/lib/clang/23/include/__stddef_null.h \
+  /home/runner/work/libopusenc/libopusenc/emsdk/upstream/lib/clang/23/include/__stddef_max_align_t.h \
+  /home/runner/work/libopusenc/libopusenc/emsdk/upstream/lib/clang/23/include/__stddef_offsetof.h \
+  celt/entcode.h celt/entdec.h silk/tables.h silk/PLC.h silk/control.h \
+  silk/debug.h celt/stack_alloc.h
+config.h:
+silk/main.h:
+silk/SigProc_FIX.h:
+/home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/compat/string.h:
+/home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/string.h:
+/home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/features.h:
+/home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/bits/alltypes.h:
+/home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/strings.h:
+silk/typedef.h:
+include/opus_types.h:
+/home/runner/work/libopusenc/libopusenc/emsdk/upstream/lib/clang/23/include/stdint.h:
+/home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/stdint.h:
+/home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/bits/stdint.h:
+include/opus_defines.h:
+/home/runner/work/libopusenc/libopusenc/emsdk/upstream/lib/clang/23/include/float.h:
+/home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/float.h:
+/home/runner/work/libopusenc/libopusenc/emsdk/upstream/lib/clang/23/include/__float_header_macro.h:
+/home/runner/work/libopusenc/libopusenc/emsdk/upstream/lib/clang/23/include/__float_float.h:
+/home/runner/work/libopusenc/libopusenc/emsdk/upstream/lib/clang/23/include/__float_infinity_nan.h:
+silk/resampler_structs.h:
+silk/macros.h:
+celt/arch.h:
+celt/ecintrin.h:
+/home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/compat/math.h:
+/home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/math.h:
+/home/runner/work/libopusenc/libopusenc/emsdk/upstream/lib/clang/23/include/limits.h:
+/home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/limits.h:
+/home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/bits/limits.h:
+celt/cpu_support.h:
+silk/Inlines.h:
+silk/MacroCount.h:
+silk/MacroDebug.h:
+silk/define.h:
+silk/errors.h:
+silk/structs.h:
+celt/entenc.h:
+/home/runner/work/libopusenc/libopusenc/emsdk/upstream/lib/clang/23/include/stddef.h:
+/home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/stddef.h:
+/home/runner/work/libopusenc/libopusenc/emsdk/upstream/lib/clang/23/include/__stddef_header_macro.h:
+/home/runner/work/libopusenc/libopusenc/emsdk/upstream/lib/clang/23/include/__stddef_ptrdiff_t.h:
+/home/runner/work/libopusenc/libopusenc/emsdk/upstream/lib/clang/23/include/__stddef_size_t.h:
+/home/runner/work/libopusenc/libopusenc/emsdk/upstream/lib/clang/23/include/__stddef_wchar_t.h:
+/home/runner/work/libopusenc/libopusenc/emsdk/upstream/lib/clang/23/include/__stddef_null.h:
+/home/runner/work/libopusenc/libopusenc/emsdk/upstream/lib/clang/23/include/__stddef_max_align_t.h:
+/home/runner/work/libopusenc/libopusenc/emsdk/upstream/lib/clang/23/include/__stddef_offsetof.h:
+celt/entcode.h:
+celt/entdec.h:
+silk/tables.h:
+silk/PLC.h:
+silk/control.h:
+silk/debug.h:
+celt/stack_alloc.h:

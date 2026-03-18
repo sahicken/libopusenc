@@ -1,0 +1,12 @@
+src/mlp_data.lo: src/mlp_data.c config.h src/mlp.h include/opus_types.h \
+  /home/runner/work/libopusenc/libopusenc/emsdk/upstream/lib/clang/23/include/stdint.h \
+  /home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/stdint.h \
+  /home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/bits/alltypes.h \
+  /home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/bits/stdint.h
+config.h:
+src/mlp.h:
+include/opus_types.h:
+/home/runner/work/libopusenc/libopusenc/emsdk/upstream/lib/clang/23/include/stdint.h:
+/home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/stdint.h:
+/home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/bits/alltypes.h:
+/home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/bits/stdint.h:

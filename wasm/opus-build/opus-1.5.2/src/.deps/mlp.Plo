@@ -1,0 +1,22 @@
+src/mlp.lo: src/mlp.c config.h \
+  /home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/compat/math.h \
+  /home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/math.h \
+  /home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/features.h \
+  /home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/bits/alltypes.h \
+  include/opus_types.h \
+  /home/runner/work/libopusenc/libopusenc/emsdk/upstream/lib/clang/23/include/stdint.h \
+  /home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/stdint.h \
+  /home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/bits/stdint.h \
+  include/opus_defines.h celt/arch.h src/mlp.h
+config.h:
+/home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/compat/math.h:
+/home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/math.h:
+/home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/features.h:
+/home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/bits/alltypes.h:
+include/opus_types.h:
+/home/runner/work/libopusenc/libopusenc/emsdk/upstream/lib/clang/23/include/stdint.h:
+/home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/stdint.h:
+/home/runner/work/libopusenc/libopusenc/emsdk/upstream/emscripten/cache/sysroot/include/bits/stdint.h:
+include/opus_defines.h:
+celt/arch.h:
+src/mlp.h:
