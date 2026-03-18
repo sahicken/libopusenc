@@ -43,7 +43,7 @@ if [ ! -d "opus-build" ]; then
     # Configure and build with Emscripten (disable intrinsics for WASM)
     emconfigure ./configure --disable-shared --disable-doc --disable-extra-programs \
         --disable-intrinsics --disable-rtcd
-    emmake make
+    emmake make -j$(nproc)
     
     cd ../..
 fi
@@ -64,7 +64,7 @@ emcc encoder.c \
     -O3 \
     -sWASM=1 \
     -sEXPORTED_FUNCTIONS='["_encoder_create","_encoder_write","_encoder_get_page","_encoder_drain","_encoder_get_data","_encoder_get_size","_encoder_destroy","_malloc","_free"]' \
-    -sEXPORTED_RUNTIME_METHODS='["ccall","cwrap","getValue","HEAP8","HEAPF32"]' \
+    -sEXPORTED_RUNTIME_METHODS='["ccall","cwrap","getValue","HEAP8","HEAPU8","HEAPF32"]' \
     -sALLOW_MEMORY_GROWTH=1 \
     -sINITIAL_MEMORY=33554432 \
     -sMAXIMUM_MEMORY=536870912 \

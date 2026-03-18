@@ -19,6 +19,7 @@ typedef struct {
 EMSCRIPTEN_KEEPALIVE
 EncoderContext* encoder_create(int sample_rate, int channels) {
     int error;
+    int ret;
     
     EncoderContext *ctx = (EncoderContext*)malloc(sizeof(EncoderContext));
     if (!ctx) return NULL;
@@ -36,9 +37,25 @@ EncoderContext* encoder_create(int sample_rate, int channels) {
         return NULL;
     }
     
-    // Set sensible defaults: 32kbps, medium complexity
-    ope_encoder_ctl(ctx->enc, OPUS_SET_BITRATE(32000));
-    ope_encoder_ctl(ctx->enc, OPUS_SET_COMPLEXITY(5));
+    // Force predictable 32 kbps output for web demo downloads.
+    ret = ope_encoder_ctl(ctx->enc, OPUS_SET_VBR(0));
+    if (ret != OPE_OK) {
+        ope_encoder_destroy(ctx->enc);
+        free(ctx);
+        return NULL;
+    }
+    ret = ope_encoder_ctl(ctx->enc, OPUS_SET_BITRATE(32000));
+    if (ret != OPE_OK) {
+        ope_encoder_destroy(ctx->enc);
+        free(ctx);
+        return NULL;
+    }
+    ret = ope_encoder_ctl(ctx->enc, OPUS_SET_COMPLEXITY(5));
+    if (ret != OPE_OK) {
+        ope_encoder_destroy(ctx->enc);
+        free(ctx);
+        return NULL;
+    }
     
     // Initialize output buffer (grows as needed)
     ctx->output_capacity = 1024 * 1024; // Start with 1MB

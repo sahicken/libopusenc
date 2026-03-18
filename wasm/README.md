@@ -95,7 +95,7 @@ module._encoder_destroy(encoderPtr);
 ## Encoder Settings
 
 Default settings (defined in `encoder.c`):
-- **Bitrate**: 128 kbps
+- **Bitrate**: 32 kbps
 - **Complexity**: 5 (medium)
 - **Application**: Audio (auto-selected)
 

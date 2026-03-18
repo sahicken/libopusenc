@@ -1,0 +1,69 @@
+name: Build and Deploy WASM Demo to GitHub Pages
+
+on:
+  push:
+    branches:
+      - wasm-encoder
+      - master
+    paths:
+      - "wasm/**"
+      - ".github/workflows/pages-wasm.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies and build WASM
+        run: |
+          # Install build tools
+          sudo apt-get update
+          sudo apt-get install -y wget autoconf automake libtool pkg-config
+          
+          # Setup Emscripten
+          git clone https://github.com/emscripten-core/emsdk.git
+          cd emsdk
+          ./emsdk install latest
+          ./emsdk activate latest
+          source ./emsdk_env.sh
+          cd ..
+          
+          # Build WASM
+          cd wasm
+          bash build.sh
+
+          # Validate deploy inputs so we fail early on malformed HTML or missing assets
+          test -s index.html
+          test -s opus-encoder.js
+          test -s opus-encoder.wasm
+          grep -q '</style>' index.html
+          grep -q '<script src="opus-encoder.js"></script>' index.html
+
+      - name: Deploy to gh-pages
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Create clean deploy directory
+          mkdir -p deploy
+          cp wasm/index.html deploy/
+          cp wasm/opus-encoder.js deploy/
+          cp wasm/opus-encoder.wasm deploy/
+          echo "" > deploy/.nojekyll
+          
+          # Create orphan gh-pages branch
+          git checkout --orphan gh-pages
+          git rm -rf .
+          cp deploy/* .
+          touch .nojekyll
+          
+          git add .
+          git commit -m "Deploy WASM demo from $(git rev-parse --short origin/HEAD)"
+          git push -f origin gh-pages
